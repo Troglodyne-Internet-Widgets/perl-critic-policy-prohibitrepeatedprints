@@ -176,7 +176,7 @@ sub default_themes   { return qw{troglodyne maintenance} }
 sub applies_to { return 'PPI::Structure::Block', 'PPI::Document' }
 
 sub violates {
-    my ( $self, $elem, $doc ) = @_;
+    my ( $self, $elem, undef ) = @_;
 
     my @runs = $self->_runs_in($elem);
     return map { $self->violation( $DESC, $EXPL, $_ ) } @runs;
