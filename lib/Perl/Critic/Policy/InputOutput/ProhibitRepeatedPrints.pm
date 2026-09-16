@@ -16,7 +16,7 @@ use parent              qw{Perl::Critic::Policy};
 
 =head1 Perl::Critic::Policy::InputOutput::ProhibitRepeatedPrints
 
-Consecutive prints to the same filehandle are one print with the string built
+Consecutive prints to the same filehandle should be one print with the string built
 first:
 
     print {*STDERR} "Configuration in $dir\n";      # reported
@@ -37,10 +37,9 @@ become:
       built here: $other
     SAID
 
-The point is not the number of system calls.  It is that a run of prints is one
-message written as several statements, so the shape of what the reader will see
-is not in any one of them -- and a line added in the middle of the run, or one
-made conditional, changes a message nobody can see whole.
+The point is not the number of system calls, though this can matter in a tight loop.
+We write code to be read by other people, and reducing the amount of information
+per-line respects the reader's time.
 
 =head2 What counts as the same handle
 
@@ -103,12 +102,13 @@ sigil.  Empty by default.
 
 =head1 CAVEATS
 
-Two consecutive prints are not always one message.  This is reported, and found
-in real code, and should not be changed:
+Two consecutive prints are not always one message.  Example:
 
+    my $file = write_thing()
     print "Wrote $file\n";
 
     print "Defining and starting $domain...\n";
+    ...
 
 The first concludes one step and the second announces the next.  Joining them
 would say something the code does not mean, and a blank line between two prints
