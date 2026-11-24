@@ -1,3 +1,5 @@
+package main;
+
 use strict;
 use warnings FATAL => 'all';
 
@@ -7,7 +9,7 @@ use 5.014;
 
 =head1 NAME
 
-t/main.t - which runs of prints the policy reports, and which it leaves alone
+main - which runs of prints the policy reports, and which it leaves alone
 
 =head1 DESCRIPTION
 
@@ -132,3 +134,5 @@ check_table(
 is( scalar( () = warnings { critic_with(q{}) } ), 0, 'nothing warns on construction' );
 
 done_testing();
+
+1;
