@@ -179,7 +179,11 @@ sub violates {
     my ( $self, $elem, undef ) = @_;
 
     my @runs = $self->_runs_in($elem);
-    return map { $self->violation( $DESC, $EXPL, $_ ) } @runs;
+    my @violations;
+    foreach my $run (@runs) {
+        push( @violations, $self->violation( $DESC, $EXPL, $run ) );
+    }
+    return @violations;
 }
 
 # The first print of every run in this block long enough to report.  Only the
@@ -211,6 +215,7 @@ sub _runs_in {
 sub _long_enough {
     my ( $self, $run, $handle ) = @_;
 
+    no autovivification;
     return 0 if scalar @{$run} < $self->{_minimum_violations};
     return 0 if $self->{_allow}{$handle};
     return 1;
@@ -225,7 +230,8 @@ sub _printed_handle {
     return undef unless $statement->isa('PPI::Statement');
     return undef if $statement->isa('PPI::Statement::Compound');
 
-    my @significant = grep { $_->significant } $statement->schildren;
+    # schildren is the significant children already.
+    my @significant = $statement->schildren;
     my $first       = shift @significant or return undef;
 
     return undef unless $first->isa('PPI::Token::Word');
